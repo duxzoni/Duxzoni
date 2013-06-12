@@ -15,6 +15,10 @@ public class ListaDeCompras {
 		itens.add(item );
 	}
 	
+	public List<Item> itens() {
+		return itens;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder retorno = new StringBuilder();

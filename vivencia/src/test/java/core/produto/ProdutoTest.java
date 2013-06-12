@@ -10,7 +10,7 @@ public class ProdutoTest {
 
 	@Test
 	public void testProduto() {
-		Produto produto = new Produto("CocaCola Litro", 10, new BigDecimal(1.69));
+		Produto produto = new Produto("CocaCola Litro", 10, new BigDecimal(1.69), TipoProduto.REFRIGERANTE);
 		
 		assertEquals("CocaCola Litro", produto.getNome());
 		assertEquals((Integer)10, produto.getQuantidadeNecessaria());

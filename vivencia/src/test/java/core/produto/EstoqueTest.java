@@ -19,16 +19,16 @@ public class EstoqueTest {
 	@Before
 	public void before(){
 		produtos = new ArrayList<Produto>();
-		Produto cocaLata = new Produto("Coca Lata", 6, new BigDecimal(1.7));
+		Produto cocaLata = new Produto("Coca Lata", 6, new BigDecimal(1.7), TipoProduto.REFRIGERANTE);
 		produtos.add(cocaLata);
 		
-		Produto cocaLitro = new Produto("Coca Litro", 10, new BigDecimal(1.7));
+		Produto cocaLitro = new Produto("Coca Litro", 10, new BigDecimal(1.7), TipoProduto.REFRIGERANTE);
 		produtos.add(cocaLitro);
 		
-		Produto ruffles = new Produto("Ruffles", 10, new BigDecimal(2.5));
+		Produto ruffles = new Produto("Ruffles", 10, new BigDecimal(2.5), TipoProduto.SALGADINHO);
 		produtos.add(ruffles);
 		
-		Produto torcida = new Produto("Torcida", 16, new BigDecimal(1.95));
+		Produto torcida = new Produto("Torcida", 16, new BigDecimal(1.95), TipoProduto.SALGADINHO);
 		produtos.add(torcida);
 		
 	

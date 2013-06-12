@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
+import core.produto.TipoProduto;
+
 import persistencia.Persistence;
 import persistencia.produto.AdicionaProduto;
 
@@ -24,7 +26,7 @@ public class App {
 		String nome = lerTeclado();
 		while (!nome.equals("FIM")) {
 			try {
-				prevayler.execute(new AdicionaProduto(nome, 5, new BigDecimal(1.69)));
+				prevayler.execute(new AdicionaProduto(nome, 5, new BigDecimal(1.69), TipoProduto.OUTROS));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

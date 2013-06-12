@@ -9,12 +9,14 @@ public class Produto implements Serializable, Comparable<Produto>{
 	private String nome;
 	private Integer quantidadeNecessaria;
 	private BigDecimal precoVenda;
+	private TipoProduto tipoProduto;
 
-	public Produto(String nome, Integer quantidadeNecessaria, BigDecimal precoVenda) {
+	public Produto(String nome, Integer quantidadeNecessaria, BigDecimal precoVenda, TipoProduto tipoProduto) {
 		super();
 		this.nome = nome;
 		this.quantidadeNecessaria = quantidadeNecessaria;
 		this.precoVenda = precoVenda;
+		this.setTipoProduto(tipoProduto);
 	}
 		
 	public String getNome() {
@@ -36,6 +38,14 @@ public class Produto implements Serializable, Comparable<Produto>{
 		this.precoVenda = precoVenda;
 	}
 
+	public TipoProduto getTipoProduto() {
+		return tipoProduto;
+	}
+	
+	public void setTipoProduto(TipoProduto tipoProduto) {
+		this.tipoProduto = tipoProduto;
+	}
+
 	public int compareTo(Produto outroProduto) {
 		return getNome().compareTo(outroProduto.getNome());
 	}
@@ -55,5 +65,5 @@ public class Produto implements Serializable, Comparable<Produto>{
 	public String toString() {
 		return getNome();
 	}
-	
+
 }

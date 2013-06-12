@@ -1,7 +1,10 @@
 package persistencia.produto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import core.produto.Produto;
@@ -33,7 +36,10 @@ public class ListaDeProdutos implements Serializable {
 
 	public void remove(String nome) {
 		produtos.remove(nome);
-		
+	}
+	
+	public List<Produto> getProdutos(){
+		return new ArrayList<Produto>(produtos.values());
 	}
 
 }

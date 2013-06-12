@@ -5,8 +5,10 @@ import java.util.Date;
 
 import core.produto.Estoque;
 import core.produto.Produto;
+import core.produto.caixa.Caixa;
 import persistencia.produto.HistoricosEstoque;
 import persistencia.produto.ListaDeProdutos;
+import persistencia.produto.caixa.HistoricosCaixa;
 
 public class Persistence implements Serializable {
 
@@ -14,6 +16,8 @@ public class Persistence implements Serializable {
 	private ListaDeProdutos produtos = new ListaDeProdutos();
 	private Estoque estoque = Estoque.getInstancia();
 	private HistoricosEstoque hitoricoEstoques = new HistoricosEstoque();
+	private Caixa caixa = Caixa.getInstance();
+	private HistoricosCaixa historicoCaixas = new HistoricosCaixa();
 
 	public void addProduto(Produto produto) {
 		produtos.add(produto);
@@ -46,5 +50,18 @@ public class Persistence implements Serializable {
 	public void adicionaHistoricoEstoque(Date data) {
 		hitoricoEstoques.addHistorico(data, estoque.copy());
 
+	}
+
+	public void atualizaCaixa() {
+		caixa.atualizaValorEmCaixa(estoque);
+	}
+	
+	public void adicionaHistoricoCaixa(Date data) {
+		historicoCaixas.addHistorico(data, caixa.copy());
+		
+	}
+
+	public ListaDeProdutos getProdutos() {
+		return produtos;
 	}
 }

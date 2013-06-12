@@ -5,15 +5,16 @@ import java.util.Date;
 public class HistoricoEstoque {
 
 	private Estoque estoque;
-
-	public Estoque getEstoque() {
-		return estoque;
-	}
+	private Date data;
 
 	public HistoricoEstoque(Estoque estoque, Date data) {
 		super();
 		this.estoque = estoque;
 		this.data = data;
+	}
+
+	public Estoque getEstoque() {
+		return estoque;
 	}
 
 	public void setEstoque(Estoque estoque) {
@@ -28,6 +29,5 @@ public class HistoricoEstoque {
 		this.data = data;
 	}
 
-	private Date data;
 
 }
