@@ -2,20 +2,20 @@ package view;
 
 import java.awt.EventQueue;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
 import persistencia.Persistence;
-import view.produto.Produto;
-
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import view.produto.EstoqueView;
+import view.produto.ProdutoView;
 
 public class Vivencia {
 
@@ -35,7 +35,7 @@ public class Vivencia {
 			public void run() {
 				try {
 					Vivencia window = new Vivencia();
-					window.prevayler = PrevaylerFactory.createPrevayler(new Persistence(), "C:\\Ghizoni\\Dropbox\\Vivência\\Duxzoni\\vivencia\\Percistencia");
+					window.prevayler = PrevaylerFactory.createPrevayler(new Persistence(), "C:\\Ghizoni\\Dropbox\\VivÃªncia\\Duxzoni\\vivencia\\Percistencia");
 
 					
 					window.frame.setVisible(true);
@@ -67,21 +67,39 @@ public class Vivencia {
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
-		JButton btnProduto = new JButton("Produto");
-		btnProduto.addActionListener(new ActionListener() {
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Modulos");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmProduto = new JMenuItem("Produto");
+		mnNewMenu.add(mntmProduto);
+		mntmProduto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Produto produto = new Produto(prevayler);
-//				Produto produto = new Produto();
-//				produto.setPrevayler(prevayler);
-				produto.setModal(true);
-				produto.setVisible(true);
+				abreTelaDeProduto();
 			}
 		});
-		GridBagConstraints gbc_btnProduto = new GridBagConstraints();
-		gbc_btnProduto.insets = new Insets(0, 0, 5, 0);
-		gbc_btnProduto.gridx = 0;
-		gbc_btnProduto.gridy = 0;
-		frame.getContentPane().add(btnProduto, gbc_btnProduto);
+		
+		JMenuItem mntmEstoque = new JMenuItem("Estoque");
+		mnNewMenu.add(mntmEstoque);
+		mntmEstoque.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abreTelaDeEstoque();
+			}
+		});
+	}
+	
+	private void abreTelaDeProduto() {
+		ProdutoView produto = new ProdutoView(prevayler);
+		produto.setModal(true);
+		produto.setVisible(true);
+	}
+
+	private void abreTelaDeEstoque() {
+		EstoqueView estoque = new EstoqueView(prevayler);
+		estoque.setModal(true);
+		estoque.setVisible(true);
 	}
 
 }

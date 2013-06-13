@@ -47,6 +47,10 @@ public class Persistence implements Serializable {
 		estoque.atualizaEstoque(produto, quantidade);
 	}
 	
+	public Estoque getEstoque() {
+		return estoque;
+	}
+
 	public void adicionaHistoricoEstoque(Date data) {
 		hitoricoEstoques.addHistorico(data, estoque.copy());
 
@@ -63,5 +67,9 @@ public class Persistence implements Serializable {
 
 	public ListaDeProdutos getProdutos() {
 		return produtos;
+	}
+
+	public void atualizaProduto(String nomeAntigo, Produto produto) {
+		produtos.atualizaProduto(nomeAntigo, produto);
 	}
 }

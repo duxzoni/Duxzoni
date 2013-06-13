@@ -2,7 +2,6 @@ package persistencia.produto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,11 @@ public class ListaDeProdutos implements Serializable {
 	
 	public List<Produto> getProdutos(){
 		return new ArrayList<Produto>(produtos.values());
+	}
+
+	public void atualizaProduto(String nomeAntigo, Produto produto) {
+		produtos.remove(nomeAntigo);
+		produtos.put(produto.getNome(), produto);
 	}
 
 }
