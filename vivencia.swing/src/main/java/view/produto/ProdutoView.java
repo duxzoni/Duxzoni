@@ -21,36 +21,30 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.prevayler.Prevayler;
-
-import persistencia.Persistence;
-import persistencia.produto.AdicionaProduto;
-import persistencia.produto.AtualizaProduto;
-import persistencia.produto.RemoveProduto;
-import core.produto.Produto;
-import core.produto.TipoProduto;
+import util.JNumberFormatField;
+import vivencia.core.produto.Produto;
+import vivencia.core.produto.TipoProduto;
+import vivencia.persistencia.MyPrevaylerPersistence;
 
 public class ProdutoView extends JDialog {
 
 	private static final long serialVersionUID = 2L;
 	private JPanel contentPane;
 	private JTextField nomeTF;
-	private JTextField precoTF;
-	private JSpinner quantidadeSp;
+	private JNumberFormatField precoTF;
+	private JFormattedTextField quantidadeTf;
 	private JComboBox tipoCb;
 	private JLabel lblTipo;
-	private Prevayler<Persistence> prevayler;
+	private MyPrevaylerPersistence myPersistence;
 	private JTree produtosTree;
 	private DefaultMutableTreeNode root;
 	private JScrollPane scrollPane;
@@ -60,8 +54,8 @@ public class ProdutoView extends JDialog {
 	private JButton salvaBtn;
 	private JButton excluiBtn;
 
-	public ProdutoView(Prevayler<Persistence> prevayler) {
-		this.prevayler = prevayler;
+	public ProdutoView(MyPrevaylerPersistence myPersistence) {
+		this.myPersistence = myPersistence;
 		setTitle("Produto");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 342);
@@ -89,34 +83,37 @@ public class ProdutoView extends JDialog {
 		contentPane.add(toolBar, gbc_toolBar);
 
 		novoBtn = new JButton("");
+		novoBtn.setToolTipText("Cria novo produto.");
 		novoBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				novoClicked();
 			}
 		});
-		novoBtn.setIcon(new ImageIcon(
-				"C:\\Ghizoni\\Dropbox\\Vivência\\Duxzoni\\vivencia.swing\\src\\main\\resources\\Icones\\novo.PNG"));
+		novoBtn.setIcon(new ImageIcon(getClass()
+				.getResource("/Icones/novo.PNG")));
 		toolBar.add(novoBtn);
 
 		salvaBtn = new JButton("");
+		salvaBtn.setToolTipText("Salva alterações no produto.");
 		salvaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				salvaClicked();
 			}
 		});
-		salvaBtn.setIcon(new ImageIcon(
-				"C:\\Ghizoni\\Dropbox\\Vivência\\Duxzoni\\vivencia.swing\\src\\main\\resources\\Icones\\salvar.png"));
+
+		salvaBtn.setIcon(new ImageIcon(getClass().getResource(
+				"/Icones/salvar.png")));
 		toolBar.add(salvaBtn);
 
 		excluiBtn = new JButton("");
+		excluiBtn.setToolTipText("Exclui produto aberto.");
 		excluiBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				excluiClicked();
 			}
 		});
-		excluiBtn
-				.setIcon(new ImageIcon(
-						"C:\\Ghizoni\\Dropbox\\Vivência\\Duxzoni\\vivencia.swing\\src\\main\\resources\\Icones\\delete.png"));
+		excluiBtn.setIcon(new ImageIcon(getClass().getResource(
+				"/Icones/delete.png")));
 		toolBar.add(excluiBtn);
 
 		JLabel lblNome = new JLabel("Nome:");
@@ -145,13 +142,16 @@ public class ProdutoView extends JDialog {
 		gbc_lblQuantidadeNecessria.gridy = 2;
 		contentPane.add(lblQuantidadeNecessria, gbc_lblQuantidadeNecessria);
 
-		quantidadeSp = new JSpinner(new SpinnerNumberModel());
+		DecimalFormat decimalFormat = new DecimalFormat();
+		decimalFormat.applyPattern("#");
+		quantidadeTf = new JFormattedTextField(decimalFormat);
+		quantidadeTf.setHorizontalAlignment(JTextField.RIGHT);
 		GridBagConstraints gbc_quantidadeTf = new GridBagConstraints();
 		gbc_quantidadeTf.insets = new Insets(0, 0, 5, 0);
 		gbc_quantidadeTf.fill = GridBagConstraints.HORIZONTAL;
 		gbc_quantidadeTf.gridx = 1;
 		gbc_quantidadeTf.gridy = 2;
-		contentPane.add(quantidadeSp, gbc_quantidadeTf);
+		contentPane.add(quantidadeTf, gbc_quantidadeTf);
 
 		JLabel lblPreoDeVenda = new JLabel("Pre\u00E7o de Venda:");
 		GridBagConstraints gbc_lblPreoDeVenda = new GridBagConstraints();
@@ -160,10 +160,14 @@ public class ProdutoView extends JDialog {
 		gbc_lblPreoDeVenda.gridx = 0;
 		gbc_lblPreoDeVenda.gridy = 3;
 		contentPane.add(lblPreoDeVenda, gbc_lblPreoDeVenda);
-
-		DecimalFormat decimalFormat = new DecimalFormat();
-		decimalFormat.applyPattern("#,##");
-		precoTF = new JFormattedTextField(decimalFormat);
+//
+//		decimalFormat = new DecimalFormat();
+//		decimalFormat.applyPattern("#.##");
+//		precoTF = new JFormattedTextField(decimalFormat);
+		precoTF = new JNumberFormatField(2) {
+			private static final long serialVersionUID = 6836701859381295305L;
+			{ setLimit(6); }
+        };
 		precoTF.setHorizontalAlignment(JTextField.RIGHT);
 		GridBagConstraints gbc_precoTF = new GridBagConstraints();
 		gbc_precoTF.insets = new Insets(0, 0, 5, 0);
@@ -226,12 +230,18 @@ public class ProdutoView extends JDialog {
 	}
 
 	private void excluiClicked() {
+
+		if(produto == null ){
+			JOptionPane.showMessageDialog(null, "Nenhum produto foi selecionado!\nClique duas vezes nele para poder exluí-lo.");
+			return;
+		}
+		
 		if (JOptionPane.showConfirmDialog(null,
 				"Realmente deseja apagar o item, " + produto.getNome() + "?",
 				"Alerta", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
 			return;
 
-		prevayler.execute(new RemoveProduto(produto.getNome()));
+		myPersistence.removeProduto(produto.getNome());
 		limpaCampos();
 		refreshTreeView();
 	}
@@ -246,24 +256,24 @@ public class ProdutoView extends JDialog {
 	}
 
 	private void criaProduto() {
-		prevayler.execute(new AdicionaProduto(nomeTF.getText().trim(),
-				new Integer(quantidadeSp.getValue().toString()), new BigDecimal(precoTF
-						.getText()), (TipoProduto) tipoCb.getSelectedItem()));
+		myPersistence.adicionaProduto(nomeTF.getText().trim(), new Integer(
+				quantidadeTf.getText()), precoTF.getValue(),
+				(TipoProduto) tipoCb.getSelectedItem());
 	}
 
 	private void atualizaProduto() {
 		String nomeAntigo = produto.getNome();
 		produto.setNome(nomeTF.getText());
-		produto.setQuantidadeNecessaria(new Integer(quantidadeSp.getValue().toString()));
-		produto.setPrecoVenda(new BigDecimal(precoTF.getText()));
+		produto.setQuantidadeNecessaria(new Integer(quantidadeTf.getText()));
+		produto.setPrecoVenda(precoTF.getValue());
 		produto.setTipoProduto((TipoProduto) tipoCb.getSelectedItem());
 
-		prevayler.execute(new AtualizaProduto(nomeAntigo, produto));
+		myPersistence.atualizaProduto(nomeAntigo, produto);
 	}
 
 	private void limpaCampos() {
 		nomeTF.setText("");
-		quantidadeSp.setValue(0);
+		quantidadeTf.setText("");
 		precoTF.setText("");
 		tipoCb.setSelectedItem(null);
 	}
@@ -281,25 +291,24 @@ public class ProdutoView extends JDialog {
 
 	private boolean possuiAlteracoes() {
 		boolean modificado = false;
-		Produto produtoPreenchido = prevayler.prevalentSystem()
-				.getProduto(nomeTF.getText());
+		Produto produtoPreenchido = myPersistence.getProduto(nomeTF.getText());
 
 		if (produtoPreenchido != null) {
 			modificado = modificado
-					|| produtoPreenchido.getNome().equals(nomeTF.getText());
+					|| !produtoPreenchido.getNome().equals(nomeTF.getText());
 			modificado = modificado
-					|| produtoPreenchido.getQuantidadeNecessaria().equals(
-							new Integer(quantidadeSp.getValue().toString()));
+					|| !produtoPreenchido.getQuantidadeNecessaria().equals(
+							new Integer(quantidadeTf.getText()));
 			modificado = modificado
-					|| produtoPreenchido.getPrecoVenda().equals(
-							new BigDecimal(precoTF.getText()));
+					|| !produtoPreenchido.getPrecoVenda().equals(
+							precoTF.getValue());
 			modificado = modificado
-					|| produtoPreenchido.getTipoProduto().equals(
+					|| !produtoPreenchido.getTipoProduto().equals(
 							tipoCb.getSelectedItem());
 		} else {
 			modificado = modificado || !nomeTF.getText().trim().isEmpty();
-			modificado = modificado || !quantidadeSp.getValue().toString().equals("0");
-			modificado = modificado || !precoTF.getText().trim().isEmpty();
+			modificado = modificado || !quantidadeTf.getText().trim().isEmpty();
+			modificado = modificado || !precoTF.getValue().equals(new BigDecimal("0.00"));
 			modificado = modificado || tipoCb.getSelectedItem() != null;
 		}
 
@@ -314,7 +323,7 @@ public class ProdutoView extends JDialog {
 	private void setProduto(Produto produtoLocal) {
 		produto = produtoLocal;
 		nomeTF.setText(produto.getNome());
-		quantidadeSp.setValue(produto.getQuantidadeNecessaria());
+		quantidadeTf.setValue(produto.getQuantidadeNecessaria());
 		precoTF.setText(produto.getPrecoVenda().toString());
 		tipoCb.setSelectedItem(produto.getTipoProduto());
 	}
@@ -333,8 +342,7 @@ public class ProdutoView extends JDialog {
 	}
 
 	private void preencheProdutos() {
-		List<Produto> produtos = prevayler.prevalentSystem()
-				.getProdutos().getProdutos();
+		List<Produto> produtos = myPersistence.getProdutos();
 		Collections.sort(produtos);
 		for (Produto produto : produtos) {
 			DefaultMutableTreeNode nextNode = root.getNextNode();

@@ -10,21 +10,20 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import org.prevayler.Prevayler;
-import org.prevayler.PrevaylerFactory;
-
-import persistencia.Persistence;
-import view.produto.EstoqueView;
+import view.caixa.CaixaView;
 import view.produto.ProdutoView;
+import view.produto.estoque.EstoqueView;
+import view.produto.lista.ListasDeComprasView;
+import vivencia.persistencia.MyPrevaylerPersistence;
 
 public class Vivencia {
 
 	private JFrame frame;
-	private Prevayler<Persistence> prevayler;
+	private MyPrevaylerPersistence myPersistence;
 	
 
-	public Prevayler<Persistence> getPrevayler() {
-		return prevayler;
+	public MyPrevaylerPersistence getMyPersistence() {
+		return myPersistence;
 	}
 
 	/**
@@ -35,9 +34,7 @@ public class Vivencia {
 			public void run() {
 				try {
 					Vivencia window = new Vivencia();
-					window.prevayler = PrevaylerFactory.createPrevayler(new Persistence(), "C:\\Ghizoni\\Dropbox\\Vivência\\Duxzoni\\vivencia\\Percistencia");
-
-					
+					window.myPersistence = new MyPrevaylerPersistence("C:/Ghizoni/Dropbox/Vivência/Duxzoni/Percistencia"); 
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -88,18 +85,60 @@ public class Vivencia {
 				abreTelaDeEstoque();
 			}
 		});
+
+		JMenuItem mntmListaCompras = new JMenuItem("Listas de Compras");
+		mnNewMenu.add(mntmListaCompras);
+		mntmListaCompras.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abreTelaDeListasDeCompras();
+			}
+		});
+		
+		JMenuItem mntmCaixa = new JMenuItem("Caixa");
+		mnNewMenu.add(mntmCaixa);
+		mntmCaixa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abreTelaDeCaixa();
+			}
+		});
+		
+//		JMenuItem mntmHistoricoEstoque = new JMenuItem("Histórico de Estoque");
+//		mnNewMenu.add(mntmHistoricoEstoque);
+//		mntmHistoricoEstoque.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				abreTelaDeHistoricoDeEstoque();
+//			}
+//		});
 	}
 	
 	private void abreTelaDeProduto() {
-		ProdutoView produto = new ProdutoView(prevayler);
+		ProdutoView produto = new ProdutoView(myPersistence);
 		produto.setModal(true);
 		produto.setVisible(true);
 	}
 
 	private void abreTelaDeEstoque() {
-		EstoqueView estoque = new EstoqueView(prevayler);
+		EstoqueView estoque = new EstoqueView(myPersistence);
 		estoque.setModal(true);
 		estoque.setVisible(true);
 	}
+
+	private void abreTelaDeListasDeCompras() {
+		ListasDeComprasView listasDeCompras = new ListasDeComprasView(myPersistence);
+		listasDeCompras.setModal(true);
+		listasDeCompras.setVisible(true);
+	}
+
+	private void abreTelaDeCaixa() {
+		CaixaView caixa = new CaixaView(myPersistence);
+		caixa.setModal(true);
+		caixa.setVisible(true);
+	}
+
+//	private void abreTelaDeHistoricoDeEstoque() {
+//		HistoricosDeEstoqueView historicoEstoque = new HistoricosDeEstoqueView(myPersistence);
+//		historicoEstoque.setModal(true);
+//		historicoEstoque.setVisible(true);
+//	}
 
 }

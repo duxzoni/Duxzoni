@@ -6,10 +6,9 @@ import java.math.BigDecimal;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
-import core.produto.TipoProduto;
-
-import persistencia.Persistence;
-import persistencia.produto.AdicionaProduto;
+import vivencia.core.produto.TipoProduto;
+import vivencia.persistencia.Persistence;
+import vivencia.persistencia.produto.AdicionaProduto;
 
 
 public class App {

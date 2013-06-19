@@ -1,7 +1,6 @@
 package util;
 
 import java.awt.Component;
-import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.List;
 
